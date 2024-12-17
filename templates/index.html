@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unique Number Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input,
+    button {
+      padding: 10px;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Unique Number Generator</h1>
+
+  <form action="{{ url_for('index') }}" method="POST">
+    <label for="range_start">Range Start: 1000</label>
+    <input type="number" id="range_start" name="range_start" required min="0">
+
+    <label for="range_end">Range End: 9999</label>
+    <input type="number" id="range_end" name="range_end" required min="1">
+
+    <button type="submit">Generate Unique Number</button>
+  </form>
+
+  {% if unique_number is not none %}
+  <div class="result">
+    <h2>Generated Unique Number: {{ unique_number }}</h2>
+  </div>
+  {% endif %}
+
+  {% if error_message %}
+  <div class="result error">
+    <p>{{ error_message }}</p>
+  </div>
+  {% endif %}
+</body>
+
+</html>
