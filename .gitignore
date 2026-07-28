@@ -1,3 +1,4 @@
 # Ignore static asset folders (served from host during development)
 static/
 app/static/
+.DS_Store
