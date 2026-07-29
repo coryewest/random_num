@@ -15,10 +15,13 @@ podman build -t random_num:latest -f Containerfile .
 - Run for development (bind-mount `templates/` and `excluded_numbers.txt` from the host so edits take effect immediately):
 
 ```bash
+mkdir -p ./data
+mkdir -p ./data
+: > ./data/excluded_numbers.txt
 podman run --rm -p 5000:5000 \
-	-v $(pwd)/excluded_numbers.txt:/tmp/excluded_numbers.txt:Z \
-	-v $(pwd)/templates:/app/templates:Z \
-	-e EXCLUDE_FILE=/tmp/excluded_numbers.txt \
+	-v $(pwd)/data:/data:Z \
+	-v $(pwd)/app/templates:/app/templates:Z \
+	-e EXCLUDE_FILE=/data/excluded_numbers.txt \
 	random_num:latest
 ```
 
@@ -32,15 +35,15 @@ podman run --rm -p 5000:5000 \
 	random_num:latest
 ```
 
-Note: the app currently reads `/app/excluded_numbers.txt` by default. Either change the app to read `EXCLUDE_PATH` or create a symlink at container startup pointing `/app/excluded_numbers.txt` to `/app/data/excluded_numbers.txt`.
+Note: the app now uses `/tmp/excluded_numbers.txt` by default, but the bind-mount example above uses `/data/excluded_numbers.txt` so the file is writable and easy to edit from the host.
 
 - Copy files out/in for maintenance:
 
 ```bash
 # copy from container to host
-podman cp <container>:/app/excluded_numbers.txt ./excluded_numbers.txt
+podman cp <container>:/data/excluded_numbers.txt ./data/excluded_numbers.txt
 # edit locally, then copy back
-podman cp ./excluded_numbers.txt <container>:/app/excluded_numbers.txt
+podman cp ./data/excluded_numbers.txt <container>:/data/excluded_numbers.txt
 ```
 
 - SELinux and permissions:
