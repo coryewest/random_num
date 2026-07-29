@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 # Path to the exclusion file
 EXCLUDE_FILE = 'excluded_numbers.txt'
+EXCLUDE_PATH = os.path.join(os.path.dirname(__file__), EXCLUDE_FILE)
 
 # Fixed range for generated numbers
 RANGE_START = 1000
@@ -19,7 +20,9 @@ def index():
     if request.method == 'POST':
         try:
             # Generate unique number using fixed range
-            unique_number = generate_unique_number(RANGE_START, RANGE_END, EXCLUDE_FILE)
+            unique_number = generate_unique_number(RANGE_START, RANGE_END, EXCLUDE_PATH)
+            with open(EXCLUDE_PATH, 'a') as f:
+                f.write(str(unique_number) + '\n')
         
         except ValueError as e:
             error_message = str(e)
