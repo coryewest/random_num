@@ -1,4 +1,5 @@
 # random_num
+
 Flask app to run the random_num.py script within a web page.
 
 ## Podman: Build, Run, and Persistence
@@ -15,8 +16,9 @@ podman build -t random_num:latest -f Containerfile .
 
 ```bash
 podman run --rm -p 5000:5000 \
-	-v $(pwd)/excluded_numbers.txt:/app/excluded_numbers.txt:Z \
+	-v $(pwd)/excluded_numbers.txt:/tmp/excluded_numbers.txt:Z \
 	-v $(pwd)/templates:/app/templates:Z \
+	-e EXCLUDE_FILE=/tmp/excluded_numbers.txt \
 	random_num:latest
 ```
 
@@ -42,10 +44,10 @@ podman cp ./excluded_numbers.txt <container>:/app/excluded_numbers.txt
 ```
 
 - SELinux and permissions:
-	- On RHEL-like hosts use the `:Z` (or `:z`) mount option to relabel files for container access.
-	- Ensure the container process UID can write the mounted files (adjust host ownership or use a volume).
+  - On RHEL-like hosts use the `:Z` (or `:z`) mount option to relabel files for container access.
+  - Ensure the container process UID can write the mounted files (adjust host ownership or use a volume).
 
 Recommendation:
+
 - For quick edits and template changes during development, bind-mount `templates/` and `excluded_numbers.txt` from the host.
 - For production, prefer a named volume for `excluded_numbers.txt` or migrate to a small database (SQLite/Postgres) and keep templates in source control and deployed with image builds.
-

@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for # type: ignore
-from random_num import generate_unique_number
+from random_num import generate_unique_number, get_exclude_file_path
 import os
 
 app = Flask(__name__)
 
 # Path to the exclusion file
-EXCLUDE_FILE = 'excluded_numbers.txt'
-EXCLUDE_PATH = os.path.join(os.path.dirname(__file__), EXCLUDE_FILE)
+EXCLUDE_FILE = os.getenv('EXCLUDE_FILE') or os.getenv('EXCLUDE_PATH') or '/tmp/excluded_numbers.txt'
+EXCLUDE_PATH = get_exclude_file_path(EXCLUDE_FILE)
 
 # Fixed range for generated numbers
 RANGE_START = 1000
