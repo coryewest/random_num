@@ -12,14 +12,12 @@ Quick examples for building and running the app with Podman and keeping persiste
 podman build -t random_num:latest -f Containerfile .
 ```
 
-- Run for development (bind-mount `templates/` and `excluded_numbers.txt` from the host so edits take effect immediately):
+- Run for development (use a named volume so the exclusion file is writable inside the container):
 
 ```bash
-mkdir -p ./data
-mkdir -p ./data
-: > ./data/excluded_numbers.txt
+podman volume create random_num_data
 podman run --rm -p 5000:5000 \
-	-v $(pwd)/data:/data:Z \
+	-v random_num_data:/data:Z \
 	-v $(pwd)/app/templates:/app/templates:Z \
 	-e EXCLUDE_FILE=/data/excluded_numbers.txt \
 	random_num:latest
@@ -35,15 +33,15 @@ podman run --rm -p 5000:5000 \
 	random_num:latest
 ```
 
-Note: the app now uses `/tmp/excluded_numbers.txt` by default, but the bind-mount example above uses `/data/excluded_numbers.txt` so the file is writable and easy to edit from the host.
+Note: the app now uses `/tmp/excluded_numbers.txt` by default, but the named-volume example above uses `/data/excluded_numbers.txt` so the file is writable inside the container.
 
 - Copy files out/in for maintenance:
 
 ```bash
 # copy from container to host
-podman cp <container>:/data/excluded_numbers.txt ./data/excluded_numbers.txt
+podman cp <container>:/data/excluded_numbers.txt ./excluded_numbers.txt
 # edit locally, then copy back
-podman cp ./data/excluded_numbers.txt <container>:/data/excluded_numbers.txt
+podman cp ./excluded_numbers.txt <container>:/data/excluded_numbers.txt
 ```
 
 - SELinux and permissions:
