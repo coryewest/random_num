@@ -1,3 +1,0 @@
-from random_num_flask import app
-if __name__ == "__main__":
-    app.run()
